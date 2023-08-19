@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QWOP Clone</title>
+    <style>
+      body {
+        background-color: black;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        text-align: center;
+      }
+      #myCanvas {
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas"></canvas>
+    <br />
+    <button onclick="useSkeleton()">Use Skeleton</button>
+
+    <script src="skeleton.js"></script>
+    <script src="controls.js"></script>
+    <script src="math.js"></script>
+    <script src="physics.js"></script>
+    <script src="skeletonEditor.js"></script>
+    <script src="segment.js"></script>
+    <script src="particle.js"></script>
+    <script>
+      myCanvas.width = window.innerWidth;
+      myCanvas.height = 500;
+
+      const ctx = myCanvas.getContext("2d");
+
+      const floorY = myCanvas.height * 0.9;
+
+      const physics = new Physics([], [], floorY);
+      const skeletonEditor = new SkeletonEditor(myCanvas);
+
+      const controls = new Controls();
+
+      skeletonEditor.load();
+      animate();
+
+      function useSkeleton() {
+        physics.particles = [...skeletonEditor.particles];
+        physics.segments = [...skeletonEditor.segments];
+
+        skeletonEditor.reset();
+      }
+      function animate() {
+        ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+
+        physics.update(ctx);
+
+        ctx.beginPath();
+        ctx.moveTo(0, floorY);
+        ctx.lineTo(myCanvas.width, floorY);
+        ctx.stroke();
+        skeletonEditor.draw();
+
+        requestAnimationFrame(animate);
+      }
+    </script>
+  </body>
+</html>
